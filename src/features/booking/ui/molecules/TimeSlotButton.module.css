@@ -1,0 +1,33 @@
+.slot {
+  height: 38px;
+  min-height: var(--layout-min-tap);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-13);
+  font-weight: var(--font-weight-medium);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: border-color 120ms ease;
+}
+
+.slot:hover:not(:disabled) {
+  border-color: var(--color-border-hover);
+}
+
+.taken {
+  background: var(--color-page);
+  color: var(--color-muted-4);
+  cursor: default;
+  text-decoration: line-through;
+}
+
+.selected {
+  background: var(--color-accent);
+  color: var(--color-surface);
+  border-color: var(--color-accent);
+  font-weight: var(--font-weight-semibold);
+}

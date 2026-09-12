@@ -1,0 +1,58 @@
+.desktopStepper {
+  display: none;
+  align-items: center;
+  gap: var(--space-5);
+  padding-bottom: var(--space-12);
+  border-bottom: 1px solid var(--color-border-soft);
+}
+
+.mobileStepper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-bottom: var(--space-9);
+  border-bottom: 1px solid var(--color-border-soft);
+}
+
+.mobileLabelRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.mobileStepLabel {
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-muted-2);
+}
+
+.mobileStepName {
+  font-size: var(--font-size-13);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-ink);
+}
+
+.progressTrack {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border-soft);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: var(--radius-pill);
+  transition: width 160ms ease;
+}
+
+@media (min-width: 640px) {
+  .desktopStepper {
+    display: flex;
+  }
+
+  .mobileStepper {
+    display: none;
+  }
+}

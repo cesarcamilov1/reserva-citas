@@ -1,0 +1,94 @@
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-8);
+  padding: var(--space-9) var(--space-10);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: none;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease, background 120ms ease;
+  text-align: left;
+  width: 100%;
+  min-height: var(--layout-min-tap);
+}
+
+.card:hover {
+  border-color: var(--color-border-hover);
+}
+
+.selected {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-selected);
+}
+
+.ring {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-muted-3);
+  background: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ringSelected {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+}
+
+.ringDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  opacity: 0;
+}
+
+.ringDotVisible {
+  opacity: 1;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-snug);
+}
+
+.desc {
+  font-size: var(--font-size-13);
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.price {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-snug);
+}
+
+.duration {
+  font-size: var(--font-size-12);
+  color: var(--color-muted-2);
+}

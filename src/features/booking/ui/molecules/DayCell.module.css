@@ -1,0 +1,38 @@
+.cell {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-13);
+  font-weight: var(--font-weight-medium);
+  background: var(--color-day-closed-bg);
+  color: var(--color-muted-4);
+  border: 1px solid var(--color-day-closed-border);
+  cursor: default;
+}
+
+.blank {
+  visibility: hidden;
+  cursor: default;
+}
+
+.open {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-ink-25);
+  border-color: var(--color-accent-line);
+  cursor: pointer;
+}
+
+.open:hover {
+  background: var(--color-day-hover);
+}
+
+.selected {
+  background: var(--color-accent);
+  color: var(--color-surface);
+  border-color: var(--color-accent);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}

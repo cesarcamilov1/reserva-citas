@@ -1,0 +1,11 @@
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-11);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}

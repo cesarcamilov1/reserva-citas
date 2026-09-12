@@ -1,0 +1,122 @@
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-10);
+  padding: 46px var(--space-11) var(--space-15) var(--space-11);
+  text-align: center;
+}
+
+.iconCircle {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+  border: 1px solid var(--color-accent-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+}
+
+.textBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 430px;
+}
+
+.title {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-28);
+  line-height: 1.2;
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.subtitle {
+  font-size: var(--font-size-14);
+  line-height: 1.55;
+  color: var(--color-muted);
+}
+
+.folio {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding: 9px var(--space-8);
+  background: var(--color-rail);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-pill);
+}
+
+.folioLabel {
+  font-size: var(--font-size-12);
+  color: var(--color-muted-2);
+}
+
+.folioValue {
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.04em;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  padding-top: var(--space-3);
+}
+
+.msgButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  height: var(--layout-min-tap);
+  padding: 0 var(--space-11);
+  background: var(--color-accent);
+  color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.calButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  height: var(--layout-min-tap);
+  padding: 0 var(--space-11);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-ink-secondary);
+  cursor: pointer;
+}
+
+.calButtonActive {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent-line);
+  color: var(--color-accent-ink-12, var(--color-accent));
+}
+
+.previewWrap {
+  width: 100%;
+  max-width: 340px;
+  text-align: left;
+}
+
+.resetLink {
+  font-size: var(--font-size-13);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent);
+  padding-top: var(--space-2);
+  cursor: pointer;
+  min-height: var(--layout-min-tap);
+  display: flex;
+  align-items: center;
+}

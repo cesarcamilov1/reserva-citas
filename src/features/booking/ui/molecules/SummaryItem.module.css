@@ -1,0 +1,45 @@
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-6);
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--color-muted-3);
+}
+
+.iconActive {
+  color: var(--color-accent);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--font-size-13);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.35;
+  color: var(--color-muted-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.titleActive {
+  color: var(--color-ink);
+}
+
+.subtitle {
+  font-size: var(--font-size-12);
+  line-height: 1.4;
+  color: var(--color-muted-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,26 +1,17 @@
+import type { TimeSlot } from '../../domain/types'
 import styles from './TimeSlotButton.module.css'
 
 interface TimeSlotButtonProps {
-  label: string
-  taken: boolean
-  selected: boolean
-  onSelect: (label: string) => void
+  slot: TimeSlot
+  onSelect: (slot: TimeSlot) => void
 }
 
-export function TimeSlotButton({ label, taken, selected, onSelect }: TimeSlotButtonProps) {
-  const classes = [styles.slot, taken ? styles.taken : '', selected ? styles.selected : '']
-    .filter(Boolean)
-    .join(' ')
+export function TimeSlotButton({ slot, onSelect }: TimeSlotButtonProps) {
+  const classes = [styles.slot, slot.selected ? styles.selected : ''].filter(Boolean).join(' ')
 
   return (
-    <button
-      type="button"
-      className={classes}
-      disabled={taken}
-      aria-pressed={selected}
-      onClick={() => onSelect(label)}
-    >
-      {label}
+    <button type="button" className={classes} aria-pressed={slot.selected} onClick={() => onSelect(slot)}>
+      {slot.label}
     </button>
   )
 }

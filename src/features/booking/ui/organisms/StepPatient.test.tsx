@@ -6,7 +6,7 @@ describe('StepPatient', () => {
   it('renders every patient field with a real label', () => {
     render(
       <StepPatient
-        patient={{ firstName: '', lastName: '', phone: '', birthDate: '', email: '', notes: '' }}
+        patient={{ firstName: '', lastName: '', phone: '', email: '', notes: '' }}
         wantsWhatsapp
         onChangeField={vi.fn()}
         onToggleWhatsapp={vi.fn()}

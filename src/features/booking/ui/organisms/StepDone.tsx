@@ -4,7 +4,8 @@ import styles from './StepDone.module.css'
 
 interface StepDoneProps {
   doneLine: string
-  folio: string
+  publicRef: string
+  statusLabel: string
   showMessage: boolean
   onToggleMessage: () => void
   addedToCalendar: boolean
@@ -12,11 +13,16 @@ interface StepDoneProps {
   waText: string
   waTime: string
   onReset: () => void
+  onCancel: () => void
+  cancelling: boolean
+  cancelError: string | null
+  cancelled: boolean
 }
 
 export function StepDone({
   doneLine,
-  folio,
+  publicRef,
+  statusLabel,
   showMessage,
   onToggleMessage,
   addedToCalendar,
@@ -24,6 +30,10 @@ export function StepDone({
   waText,
   waTime,
   onReset,
+  onCancel,
+  cancelling,
+  cancelError,
+  cancelled,
 }: StepDoneProps) {
   return (
     <div className={styles.step}>
@@ -31,12 +41,13 @@ export function StepDone({
         <CheckIcon size={28} strokeWidth={2} />
       </div>
       <div className={styles.textBlock}>
-        <div className={styles.title}>Tu cita quedó agendada</div>
+        <div className={styles.title}>{cancelled ? 'Tu cita fue cancelada' : 'Tu cita quedó agendada'}</div>
         <div className={styles.subtitle}>{doneLine}</div>
       </div>
       <div className={styles.folio}>
-        <span className={styles.folioLabel}>Folio</span>
-        <span className={styles.folioValue}>{folio}</span>
+        <span className={styles.folioLabel}>Referencia</span>
+        <span className={styles.folioValue}>{publicRef}</span>
+        <span className={styles.folioLabel}>Estado: {statusLabel}</span>
       </div>
 
       <div className={styles.actions}>
@@ -58,6 +69,17 @@ export function StepDone({
         <div className={styles.previewWrap}>
           <WhatsappBubble text={waText} time={waTime} />
         </div>
+      )}
+
+      {!cancelled && (
+        <button type="button" className={styles.cancelLink} onClick={onCancel} disabled={cancelling}>
+          {cancelling ? 'Cancelando…' : 'Cancelar cita'}
+        </button>
+      )}
+      {cancelError && (
+        <p className={styles.cancelError} role="alert">
+          {cancelError}
+        </p>
       )}
 
       <button type="button" className={styles.resetLink} onClick={onReset}>

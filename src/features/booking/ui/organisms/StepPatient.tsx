@@ -39,25 +39,16 @@ export function StepPatient({ patient, wantsWhatsapp, onChangeField, onToggleWha
           value={patient.phone}
           onChange={(value) => onChangeField('phone', value)}
         />
-        <TextField
-          id="nac"
-          label="Fecha de nacimiento"
-          placeholder="DD / MM / AAAA"
-          value={patient.birthDate}
-          onChange={(e) => onChangeField('birthDate', e.target.value)}
-        />
 
-        <div className={styles.span2}>
-          <TextField
-            id="mail"
-            label="Correo"
-            optionalLabel
-            type="email"
-            placeholder="ana.ramirez@correo.com"
-            value={patient.email}
-            onChange={(e) => onChangeField('email', e.target.value)}
-          />
-        </div>
+        <TextField
+          id="mail"
+          label="Correo"
+          optionalLabel
+          type="email"
+          placeholder="ana.ramirez@correo.com"
+          value={patient.email}
+          onChange={(e) => onChangeField('email', e.target.value)}
+        />
 
         <div className={styles.span2}>
           <TextAreaField

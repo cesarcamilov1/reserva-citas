@@ -1,13 +1,15 @@
-import type { Service } from '../../domain/types'
 import styles from './ServiceCard.module.css'
 
 interface ServiceCardProps {
-  service: Service
+  name: string
+  description?: string
+  priceLabel: string
+  durationLabel: string
   selected: boolean
   onSelect: () => void
 }
 
-export function ServiceCard({ service, selected, onSelect }: ServiceCardProps) {
+export function ServiceCard({ name, description, priceLabel, durationLabel, selected, onSelect }: ServiceCardProps) {
   return (
     <button
       type="button"
@@ -19,12 +21,12 @@ export function ServiceCard({ service, selected, onSelect }: ServiceCardProps) {
         <span className={[styles.ringDot, selected ? styles.ringDotVisible : ''].filter(Boolean).join(' ')} />
       </span>
       <span className={styles.body}>
-        <span className={styles.name}>{service.name}</span>
-        <span className={styles.desc}>{service.description}</span>
+        <span className={styles.name}>{name}</span>
+        {description && <span className={styles.desc}>{description}</span>}
       </span>
       <span className={styles.meta}>
-        <span className={styles.price}>{service.price}</span>
-        <span className={styles.duration}>{service.duration}</span>
+        <span className={styles.price}>{priceLabel}</span>
+        <span className={styles.duration}>{durationLabel}</span>
       </span>
     </button>
   )

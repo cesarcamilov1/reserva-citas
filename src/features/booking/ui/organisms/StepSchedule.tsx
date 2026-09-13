@@ -19,7 +19,10 @@ interface StepScheduleProps {
   slotsTitle: string
   morningSlots: TimeSlot[]
   afternoonSlots: TimeSlot[]
-  onSelectTime: (time: string) => void
+  onSelectTime: (slot: TimeSlot) => void
+  loading: boolean
+  error: string | null
+  onRetry: () => void
 }
 
 export function StepSchedule({
@@ -35,6 +38,9 @@ export function StepSchedule({
   morningSlots,
   afternoonSlots,
   onSelectTime,
+  loading,
+  error,
+  onRetry,
 }: StepScheduleProps) {
   return (
     <div className={styles.step}>
@@ -43,82 +49,105 @@ export function StepSchedule({
         subtitle="Horario del centro de México (GMT-6). Solo ves los espacios libres."
       />
 
-      <div className={styles.layout}>
-        <div className={styles.calendarPane}>
-          <div className={styles.calendarHead}>
-            <div className={styles.monthLabel}>{monthLabel}</div>
-            <div className={styles.monthNav}>
-              <button type="button" className={styles.navButton} onClick={onPrevMonth} disabled={!canGoPrevMonth} aria-label="Mes anterior">
-                <ChevronLeftIcon size={16} />
-              </button>
-              <button type="button" className={styles.navButton} onClick={onNextMonth} disabled={!canGoNextMonth} aria-label="Mes siguiente">
-                <ChevronRightIcon size={16} />
-              </button>
-            </div>
-          </div>
-
-          <div className={styles.weekRow}>
-            {WEEKDAY_HEADERS.map((day) => (
-              <div className={styles.weekday} key={day}>
-                {day}
-              </div>
-            ))}
-          </div>
-
-          <div className={styles.grid}>
-            {cells.map((cell, index) => (
-              <DayCell key={cell.dayKey || `blank-${index}`} cell={cell} onSelect={onSelectDay} />
-            ))}
-          </div>
-
-          <div className={styles.legend}>
-            <div className={styles.legendItem}>
-              <span className={styles.legendSwatch} />
-              <span className={styles.legendLabel}>Con espacio</span>
-            </div>
-            <div className={styles.legendItem}>
-              <span className={[styles.legendSwatch, styles.legendSwatchClosed].join(' ')} />
-              <span className={styles.legendLabel}>Sin espacio</span>
-            </div>
-          </div>
+      {error && (
+        <div className={styles.status} role="alert">
+          {error}
+          <button type="button" className={styles.retryButton} onClick={onRetry}>
+            Reintentar
+          </button>
         </div>
+      )}
 
-        <div className={styles.slotsPane}>
-          <div className={styles.slotsTitle}>{slotsTitle}</div>
+      {loading && !error && <div className={styles.status}>Cargando disponibilidad…</div>}
 
-          {!hasDay && (
-            <div className={styles.emptyState}>
-              <CalendarIcon size={22} />
-              <div className={styles.emptyText}>
-                Selecciona un día en el calendario
-                <br />
-                para ver los horarios disponibles.
+      {!loading && !error && (
+        <div className={styles.layout}>
+          <div className={styles.calendarPane}>
+            <div className={styles.calendarHead}>
+              <div className={styles.monthLabel}>{monthLabel}</div>
+              <div className={styles.monthNav}>
+                <button type="button" className={styles.navButton} onClick={onPrevMonth} disabled={!canGoPrevMonth} aria-label="Mes anterior">
+                  <ChevronLeftIcon size={16} />
+                </button>
+                <button type="button" className={styles.navButton} onClick={onNextMonth} disabled={!canGoNextMonth} aria-label="Mes siguiente">
+                  <ChevronRightIcon size={16} />
+                </button>
               </div>
             </div>
-          )}
 
-          {hasDay && (
-            <>
-              <div className={styles.slotGroup}>
-                <div className={styles.slotGroupLabel}>Mañana</div>
-                <div className={styles.slotGrid}>
-                  {morningSlots.map((slot) => (
-                    <TimeSlotButton key={slot.label} label={slot.label} taken={slot.taken} selected={slot.selected} onSelect={onSelectTime} />
-                  ))}
+            <div className={styles.weekRow}>
+              {WEEKDAY_HEADERS.map((day) => (
+                <div className={styles.weekday} key={day}>
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            <div className={styles.grid}>
+              {cells.map((cell, index) => (
+                <DayCell key={cell.dayKey || `blank-${index}`} cell={cell} onSelect={onSelectDay} />
+              ))}
+            </div>
+
+            <div className={styles.legend}>
+              <div className={styles.legendItem}>
+                <span className={styles.legendSwatch} />
+                <span className={styles.legendLabel}>Con espacio</span>
+              </div>
+              <div className={styles.legendItem}>
+                <span className={[styles.legendSwatch, styles.legendSwatchClosed].join(' ')} />
+                <span className={styles.legendLabel}>Sin espacio</span>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.slotsPane}>
+            <div className={styles.slotsTitle}>{slotsTitle}</div>
+
+            {!hasDay && (
+              <div className={styles.emptyState}>
+                <CalendarIcon size={22} />
+                <div className={styles.emptyText}>
+                  Selecciona un día en el calendario
+                  <br />
+                  para ver los horarios disponibles.
                 </div>
               </div>
-              <div className={styles.slotGroup}>
-                <div className={styles.slotGroupLabel}>Tarde</div>
-                <div className={styles.slotGrid}>
-                  {afternoonSlots.map((slot) => (
-                    <TimeSlotButton key={slot.label} label={slot.label} taken={slot.taken} selected={slot.selected} onSelect={onSelectTime} />
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
+            )}
+
+            {hasDay && (
+              <>
+                {morningSlots.length > 0 && (
+                  <div className={styles.slotGroup}>
+                    <div className={styles.slotGroupLabel}>Mañana</div>
+                    <div className={styles.slotGrid}>
+                      {morningSlots.map((slot) => (
+                        <TimeSlotButton key={slot.startsAt} slot={slot} onSelect={onSelectTime} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {afternoonSlots.length > 0 && (
+                  <div className={styles.slotGroup}>
+                    <div className={styles.slotGroupLabel}>Tarde</div>
+                    <div className={styles.slotGrid}>
+                      {afternoonSlots.map((slot) => (
+                        <TimeSlotButton key={slot.startsAt} slot={slot} onSelect={onSelectTime} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {morningSlots.length === 0 && afternoonSlots.length === 0 && (
+                  <div className={styles.emptyState}>
+                    <CalendarIcon size={22} />
+                    <div className={styles.emptyText}>Sin horarios disponibles para este día.</div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

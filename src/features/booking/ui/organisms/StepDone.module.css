@@ -120,3 +120,16 @@
   display: flex;
   align-items: center;
 }
+
+.cancelLink {
+  font-size: var(--font-size-13);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-danger, #c0392b);
+  cursor: pointer;
+}
+
+.cancelError {
+  font-size: var(--font-size-12-5);
+  color: var(--color-danger, #c0392b);
+  margin: 0;
+}

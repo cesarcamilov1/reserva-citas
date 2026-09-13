@@ -11,6 +11,8 @@ export interface ConfirmSummaryRow {
   onEdit: () => void
 }
 
+export type OtpPhase = 'idle' | 'sendingOtp' | 'otpSent' | 'verifying' | 'done'
+
 interface StepConfirmProps {
   ticketDow: string
   ticketDay: string
@@ -23,6 +25,11 @@ interface StepConfirmProps {
   waText: string
   waTime: string
   waPhone: string
+  otpPhase: OtpPhase
+  otpCode: string
+  onChangeOtpCode: (code: string) => void
+  onResendCode: () => void
+  otpError: string | null
 }
 
 export function StepConfirm({
@@ -37,7 +44,14 @@ export function StepConfirm({
   waText,
   waTime,
   waPhone,
+  otpPhase,
+  otpCode,
+  onChangeOtpCode,
+  onResendCode,
+  otpError,
 }: StepConfirmProps) {
+  const showOtpInput = otpPhase === 'otpSent' || otpPhase === 'verifying'
+
   return (
     <div className={styles.step}>
       <StepHeading title="Revisa antes de confirmar" subtitle="Si algo no cuadra, toca Editar y vuelves justo a ese paso." />
@@ -67,6 +81,46 @@ export function StepConfirm({
             <div className={styles.totalLabel}>Total estimado</div>
             <div className={styles.totalValue}>{total}</div>
           </div>
+
+          {showOtpInput && (
+            <div className={styles.otpPanel}>
+              <label htmlFor="otp" className={styles.otpLabel}>
+                Código de verificación
+              </label>
+              <p className={styles.otpHint}>Te enviamos un código por SMS a {waPhone}.</p>
+              <input
+                id="otp"
+                className={styles.otpInput}
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                placeholder="000000"
+                value={otpCode}
+                onChange={(event) => onChangeOtpCode(event.target.value.replace(/\D/g, '').slice(0, 6))}
+                disabled={otpPhase === 'verifying'}
+              />
+              {otpError && (
+                <p className={styles.otpError} role="alert">
+                  {otpError}
+                </p>
+              )}
+              <button
+                type="button"
+                className={styles.resendLink}
+                onClick={onResendCode}
+                disabled={otpPhase === 'verifying'}
+              >
+                Reenviar código
+              </button>
+            </div>
+          )}
+
+          {!showOtpInput && otpError && (
+            <p className={styles.otpError} role="alert">
+              {otpError}
+            </p>
+          )}
         </div>
 
         <div className={styles.previewPane}>

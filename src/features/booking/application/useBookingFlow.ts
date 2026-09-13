@@ -1,13 +1,12 @@
 import { useMemo, useState } from 'react'
 import { MAX_MONTH_OFFSET } from '../domain/availability'
 import { isStepValid } from '../domain/validation'
-import type { BookingState, ClinicId, PatientInfo, ServiceId, StepIndex } from '../domain/types'
+import type { BookingState, PatientInfo, StepIndex } from '../domain/types'
 
 const INITIAL_PATIENT: PatientInfo = {
   firstName: '',
   lastName: '',
   phone: '',
-  birthDate: '',
   email: '',
   notes: '',
 }
@@ -21,6 +20,8 @@ const INITIAL_STATE: BookingState = {
   monthOffset: 0,
   day: '',
   time: '',
+  slotStartsAt: '',
+  slotEndsAt: '',
   patient: INITIAL_PATIENT,
   wantsWhatsapp: true,
   showWhatsappPreview: false,
@@ -28,11 +29,11 @@ const INITIAL_STATE: BookingState = {
 }
 
 export interface BookingFlowActions {
-  setClinic: (clinicId: ClinicId) => void
-  setService: (serviceId: ServiceId) => void
+  setClinic: (clinicId: string) => void
+  setService: (serviceId: string) => void
   setMonthOffset: (delta: number) => void
   setDay: (day: string) => void
-  setTime: (time: string) => void
+  setTime: (time: string, startsAt: string, endsAt: string) => void
   setPatientField: <K extends keyof PatientInfo>(field: K, value: PatientInfo[K]) => void
   toggleWantsWhatsapp: () => void
   toggleWhatsappPreview: () => void
@@ -41,6 +42,8 @@ export interface BookingFlowActions {
   next: () => void
   back: () => void
   reset: () => void
+  /** Sends the flow back to the schedule step, e.g. after a 409 slot conflict. */
+  clearSchedule: () => void
 }
 
 export interface UseBookingFlowResult {
@@ -55,7 +58,15 @@ export function useBookingFlow(): UseBookingFlowResult {
   const actions = useMemo<BookingFlowActions>(
     () => ({
       setClinic: (clinicId) =>
-        setState((prev) => ({ ...prev, clinicId, day: '', time: '' })),
+        setState((prev) => ({
+          ...prev,
+          clinicId,
+          serviceId: '',
+          day: '',
+          time: '',
+          slotStartsAt: '',
+          slotEndsAt: '',
+        })),
 
       setService: (serviceId) => setState((prev) => ({ ...prev, serviceId })),
 
@@ -66,9 +77,10 @@ export function useBookingFlow(): UseBookingFlowResult {
           return { ...prev, monthOffset: next }
         }),
 
-      setDay: (day) => setState((prev) => ({ ...prev, day, time: '' })),
+      setDay: (day) => setState((prev) => ({ ...prev, day, time: '', slotStartsAt: '', slotEndsAt: '' })),
 
-      setTime: (time) => setState((prev) => ({ ...prev, time })),
+      setTime: (time, startsAt, endsAt) =>
+        setState((prev) => ({ ...prev, time, slotStartsAt: startsAt, slotEndsAt: endsAt })),
 
       setPatientField: (field, value) =>
         setState((prev) => ({ ...prev, patient: { ...prev.patient, [field]: value } })),
@@ -105,6 +117,9 @@ export function useBookingFlow(): UseBookingFlowResult {
         }),
 
       reset: () => setState(INITIAL_STATE),
+
+      clearSchedule: () =>
+        setState((prev) => ({ ...prev, step: 2, done: false, day: '', time: '', slotStartsAt: '', slotEndsAt: '' })),
     }),
     [],
   )

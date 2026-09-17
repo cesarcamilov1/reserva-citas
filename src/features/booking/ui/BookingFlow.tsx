@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAppointmentBooking } from '../application/useAppointmentBooking'
 import { useAvailability } from '../application/useAvailability'
 import { useBookingFlow } from '../application/useBookingFlow'
@@ -64,6 +64,13 @@ export function BookingFlow({ gateway, providerUserId, now }: BookingFlowProps) 
     now: resolvedNow,
   })
 
+  useEffect(() => {
+    if (state.clinicId || locationsQuery.loading || locationsQuery.error) return
+
+    const location = locationsQuery.locations.find((item) => item.isDefault) ?? locationsQuery.locations[0]
+    if (location) actions.setClinic(location.id)
+  }, [actions, locationsQuery.error, locationsQuery.loading, locationsQuery.locations, state.clinicId])
+
   const clinic = locationsQuery.locations.find((location) => location.id === state.clinicId) ?? null
   const service = servicesQuery.services.find((item) => item.id === state.serviceId) ?? null
 
@@ -84,13 +91,13 @@ export function BookingFlow({ gateway, providerUserId, now }: BookingFlowProps) 
     longDate: fecha,
     time: state.time,
     clinicName: clinic?.name ?? '',
-    clinicAddress: clinic?.address ?? '',
+    clinicAddress: '',
   })
 
   const summary = {
     clinic: {
       title: clinic ? clinic.name : 'Sede sin elegir',
-      subtitle: clinic ? clinic.address : 'Paso 1',
+      subtitle: clinic ? '' : 'Paso 1',
       active: Boolean(clinic),
     },
     service: {
@@ -117,7 +124,7 @@ export function BookingFlow({ gateway, providerUserId, now }: BookingFlowProps) 
     {
       label: 'Sede',
       value: clinic ? clinic.name : 'Sin definir',
-      meta: clinic ? clinic.address : '',
+      meta: '',
       onEdit: () => actions.goToStep(0),
     },
     {
@@ -229,7 +236,6 @@ export function BookingFlow({ gateway, providerUserId, now }: BookingFlowProps) 
                 loading={locationsQuery.loading}
                 error={locationsQuery.error}
                 onRetry={locationsQuery.retry}
-                onSelectClinic={actions.setClinic}
               />
             )}
 

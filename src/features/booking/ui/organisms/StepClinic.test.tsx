@@ -17,24 +17,24 @@ const LOCATIONS: Location[] = [
 ]
 
 describe('StepClinic', () => {
-  it('renders the clinic select and heading once loaded', () => {
-    render(
-      <StepClinic clinicId="" locations={LOCATIONS} loading={false} error={null} onRetry={vi.fn()} onSelectClinic={vi.fn()} />,
-    )
-    expect(screen.getByText('¿Dónde te queda mejor?')).toBeInTheDocument()
-    expect(screen.getByLabelText('Dirección del consultorio')).toBeInTheDocument()
-    expect(screen.getByText(/Clínica Polanco/)).toBeInTheDocument()
+  it('renders only the selected clinic name once loaded', () => {
+    render(<StepClinic clinicId="loc-1" locations={LOCATIONS} loading={false} error={null} onRetry={vi.fn()} />)
+
+    expect(screen.getByText('Consultorio')).toBeInTheDocument()
+    expect(screen.getByText('Clínica Polanco')).toBeInTheDocument()
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
+    expect(screen.queryByText('Av. Horacio 1855')).not.toBeInTheDocument()
   })
 
   it('shows a loading state', () => {
-    render(<StepClinic clinicId="" locations={[]} loading error={null} onRetry={vi.fn()} onSelectClinic={vi.fn()} />)
+    render(<StepClinic clinicId="" locations={[]} loading error={null} onRetry={vi.fn()} />)
     expect(screen.getByText('Cargando sedes…')).toBeInTheDocument()
   })
 
   it('shows an error with a retry action', () => {
     const onRetry = vi.fn()
     render(
-      <StepClinic clinicId="" locations={[]} loading={false} error="No pudimos cargar la información. Intenta de nuevo." onRetry={onRetry} onSelectClinic={vi.fn()} />,
+      <StepClinic clinicId="" locations={[]} loading={false} error="No pudimos cargar la información. Intenta de nuevo." onRetry={onRetry} />,
     )
     expect(screen.getByRole('alert')).toBeInTheDocument()
     screen.getByText('Reintentar').click()

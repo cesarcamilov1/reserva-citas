@@ -65,17 +65,64 @@ function fakeGateway(overrides: Partial<PublicBookingGateway> = {}): PublicBooki
 }
 
 describe('BookingFlow', () => {
-  it('starts on the clinic step and advances after picking a location', async () => {
+  it('selects the default clinic automatically and renders only its name', async () => {
     const user = userEvent.setup()
-    render(<BookingFlow gateway={fakeGateway()} providerUserId="prov-1" now={new Date(2026, 8, 11)} />)
+    const locations = [
+      { ...LOCATIONS[0], id: 'loc-first', name: 'Clínica Roma', address: 'Durango 123', isDefault: false },
+      { ...LOCATIONS[0], id: 'loc-default', name: 'Clínica Condesa' },
+    ]
+    const gateway = fakeGateway({ listLocations: vi.fn().mockResolvedValue(locations) })
+    render(<BookingFlow gateway={gateway} providerUserId="prov-1" now={new Date(2026, 8, 11)} />)
 
-    expect(screen.getByText('¿Dónde te queda mejor?')).toBeInTheDocument()
-    await waitFor(() => expect(screen.getByLabelText('Dirección del consultorio')).toBeInTheDocument())
+    expect(screen.getByText('Consultorio')).toBeInTheDocument()
+    await waitFor(() => expect(gateway.listLocationServices).toHaveBeenCalledWith('prov-1', 'loc-default'))
+    expect(screen.getAllByText('Clínica Condesa').length).toBeGreaterThan(0)
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
+    expect(screen.queryByText('Av. Horacio 1855')).not.toBeInTheDocument()
 
-    await user.selectOptions(screen.getByLabelText('Dirección del consultorio'), 'loc-1')
     await user.click(screen.getByText('Continuar'))
 
     expect(screen.getByText('¿Qué necesitas atender?')).toBeInTheDocument()
+  })
+
+  it('falls back to the first clinic when none is the default', async () => {
+    const locations = [
+      { ...LOCATIONS[0], id: 'loc-first', name: 'Clínica Roma', isDefault: false },
+      { ...LOCATIONS[0], id: 'loc-second', name: 'Clínica Condesa', isDefault: false },
+    ]
+    const gateway = fakeGateway({ listLocations: vi.fn().mockResolvedValue(locations) })
+
+    render(<BookingFlow gateway={gateway} providerUserId="prov-1" now={new Date(2026, 8, 11)} />)
+
+    await waitFor(() => expect(gateway.listLocationServices).toHaveBeenCalledWith('prov-1', 'loc-first'))
+    expect(screen.getAllByText('Clínica Roma').length).toBeGreaterThan(0)
+  })
+
+  it('does not overwrite an existing clinic when locations reload', async () => {
+    const firstGateway = fakeGateway()
+    const { rerender } = render(
+      <BookingFlow gateway={firstGateway} providerUserId="prov-1" now={new Date(2026, 8, 11)} />,
+    )
+    await waitFor(() => expect(firstGateway.listLocationServices).toHaveBeenCalledWith('prov-1', 'loc-1'))
+
+    const reloadedLocations = [
+      { ...LOCATIONS[0], id: 'loc-new-default', name: 'Clínica Condesa' },
+      { ...LOCATIONS[0], isDefault: false },
+    ]
+    const secondGateway = fakeGateway({ listLocations: vi.fn().mockResolvedValue(reloadedLocations) })
+    rerender(<BookingFlow gateway={secondGateway} providerUserId="prov-1" now={new Date(2026, 8, 11)} />)
+
+    await waitFor(() => expect(secondGateway.listLocationServices).toHaveBeenCalledWith('prov-1', 'loc-1'))
+    await waitFor(() => expect(screen.getAllByText('Clínica Polanco').length).toBeGreaterThan(0))
+  })
+
+  it('keeps the clinic step invalid when no clinics are returned', async () => {
+    const gateway = fakeGateway({ listLocations: vi.fn().mockResolvedValue([]) })
+    render(<BookingFlow gateway={gateway} providerUserId="prov-1" now={new Date(2026, 8, 11)} />)
+
+    await waitFor(() => expect(screen.queryByText('Cargando sedes…')).not.toBeInTheDocument())
+    expect(screen.getByText('Continuar')).toBeDisabled()
+    expect(gateway.listLocationServices).not.toHaveBeenCalled()
   })
 
   it('completes the full booking flow end to end', async () => {
@@ -84,8 +131,7 @@ describe('BookingFlow', () => {
     render(<BookingFlow gateway={gateway} providerUserId="prov-1" now={new Date(2026, 8, 11)} />)
 
     // Step 0: clinic
-    await waitFor(() => expect(screen.getByLabelText('Dirección del consultorio')).toBeInTheDocument())
-    await user.selectOptions(screen.getByLabelText('Dirección del consultorio'), 'loc-1')
+    await waitFor(() => expect(gateway.listLocationServices).toHaveBeenCalledWith('prov-1', 'loc-1'))
     await user.click(screen.getByText('Continuar'))
 
     // Step 1: service
@@ -133,8 +179,7 @@ describe('BookingFlow', () => {
 
     render(<BookingFlow gateway={gateway} providerUserId="prov-1" now={new Date(2026, 8, 11)} />)
 
-    await waitFor(() => expect(screen.getByLabelText('Dirección del consultorio')).toBeInTheDocument())
-    await user.selectOptions(screen.getByLabelText('Dirección del consultorio'), 'loc-1')
+    await waitFor(() => expect(gateway.listLocationServices).toHaveBeenCalledWith('prov-1', 'loc-1'))
     await user.click(screen.getByText('Continuar'))
     await waitFor(() => expect(screen.getByText('Consulta de primera vez')).toBeInTheDocument())
     await user.click(screen.getByText('Consulta de primera vez'))

@@ -38,7 +38,6 @@ export function StepService({ serviceId, services, loading, error, onRetry, onSe
             <ServiceCard
               key={service.id}
               name={service.name}
-              description={service.description}
               priceLabel={formatPriceMXN(service.defaultPrice)}
               durationLabel={formatDurationMinutes(service.durationMinutes)}
               selected={service.id === serviceId}

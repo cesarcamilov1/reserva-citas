@@ -68,12 +68,6 @@
   letter-spacing: var(--letter-spacing-snug);
 }
 
-.desc {
-  font-size: var(--font-size-13);
-  line-height: 1.5;
-  color: var(--color-muted);
-}
-
 .meta {
   display: flex;
   flex-direction: column;

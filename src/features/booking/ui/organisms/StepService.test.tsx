@@ -25,6 +25,7 @@ describe('StepService', () => {
       <StepService serviceId="" services={SERVICES} loading={false} error={null} onRetry={vi.fn()} onSelectService={vi.fn()} />,
     )
     expect(screen.getByText('Consulta de primera vez')).toBeInTheDocument()
+    expect(screen.queryByText('Historia clínica completa')).not.toBeInTheDocument()
     expect(screen.getByText('$900.00')).toBeInTheDocument()
     expect(screen.getByText('45 min')).toBeInTheDocument()
   })

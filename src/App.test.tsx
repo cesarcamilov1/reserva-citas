@@ -23,9 +23,8 @@ describe('App', () => {
 
     render(<App />)
 
-    expect(screen.getByText('Consultorio')).toBeInTheDocument()
-    await waitFor(() => expect(screen.queryByText('Cargando sedes…')).not.toBeInTheDocument())
-    expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
+    expect(screen.getByText('¿Dónde te queda mejor?')).toBeInTheDocument()
+    await waitFor(() => expect(screen.getByLabelText('Dirección del consultorio')).toBeInTheDocument())
   })
 
   it('renders the appointment manage screen when the URL has a ?ref', async () => {

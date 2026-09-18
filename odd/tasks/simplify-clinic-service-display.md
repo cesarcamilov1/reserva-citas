@@ -45,8 +45,8 @@ The user's request explicitly authorizes implementation of these booking UI chan
   - Initial build rejected an unsupported test query option; replaced it with an anchored name regex and reran tests/build successfully.
   - Runtime evidence: jsdom booking-flow interaction tests passed; browser visual check not run.
   - Rollback: this correction restores clinic files only; service changes are independent.
-  - Correction commit: pending.
-  - RDD: prior candidate consent not granted; reassess corrected candidate.
+  - Correction commit: `b074f62` (`fix(booking): restore clinic selector and selected details`).
+  - RDD: corrected slice assessed medium; native status confirms unreviewed. Consent remains pending; no review executed.
 - [x] **SERVICE-1 — Hide service descriptions**
   - Remove description rendering and the now-unused presentation contract/style.
   - Add an assertion that descriptions are absent while core service details remain.
@@ -68,7 +68,7 @@ The user's request explicitly authorizes implementation of these booking UI chan
 - Exploration completed with CodeGraph; removing the selector requires implicit clinic selection because step validity and downstream queries depend on `clinicId`.
 - CLINIC-1 previous completion invalidated by user correction; restore original behavior except select option text.
 - SERVICE-1 completed: service descriptions are no longer part of the card presentation contract or rendered output.
-- Prior candidate was 231 authored lines. The corrected candidate removes the unintended clinic source changes; delivery remains below 400 lines.
+- Corrected slice `1b2792d..b074f62`: 122 authored changed lines; no PR created. The unintended clinic source changes are restored.
 
 ## Next step
 

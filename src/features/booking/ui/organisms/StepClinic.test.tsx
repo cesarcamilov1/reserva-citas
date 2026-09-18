@@ -19,10 +19,11 @@ const LOCATIONS: Location[] = [
 describe('StepClinic', () => {
   it('renders the clinic select and heading once loaded', () => {
     render(
-      <StepClinic clinicId="" locations={LOCATIONS} loading={false} error={null} onRetry={vi.fn()} onSelectClinic={vi.fn()} />,
+      <StepClinic clinicId="loc-1" locations={LOCATIONS} loading={false} error={null} onRetry={vi.fn()} onSelectClinic={vi.fn()} />,
     )
     expect(screen.getByText('¿Dónde te queda mejor?')).toBeInTheDocument()
     expect(screen.getByLabelText('Dirección del consultorio')).toBeInTheDocument()
+    expect(screen.queryByRole('option', { name: 'Selecciona una sede' })).not.toBeInTheDocument()
     const option = screen.getByRole('option', { name: /^Clínica Polanco$/ })
     expect(option).toHaveTextContent(/^Clínica Polanco$/)
     expect(option).not.toHaveTextContent(LOCATIONS[0].address)
@@ -41,6 +42,12 @@ describe('StepClinic', () => {
   it('shows a loading state', () => {
     render(<StepClinic clinicId="" locations={[]} loading error={null} onRetry={vi.fn()} onSelectClinic={vi.fn()} />)
     expect(screen.getByText('Cargando sedes…')).toBeInTheDocument()
+  })
+
+  it('explains an empty catalog without showing an empty select', () => {
+    render(<StepClinic clinicId="" locations={[]} loading={false} error={null} onRetry={vi.fn()} onSelectClinic={vi.fn()} />)
+    expect(screen.getByText('No hay sedes disponibles por el momento.')).toBeInTheDocument()
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
   })
 
   it('shows an error with a retry action', () => {

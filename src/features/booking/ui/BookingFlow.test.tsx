@@ -24,6 +24,14 @@ const LOCATIONS: Location[] = [
   },
 ]
 
+const CUERNAVACA: Location = {
+  ...LOCATIONS[0],
+  id: 'loc-cuernavaca',
+  name: 'Consultorio CUERNAVACA',
+  address: 'Av. Morelos 100, Cuernavaca',
+  isDefault: false,
+}
+
 const SERVICES: BookableService[] = [
   {
     id: 'svc-1',
@@ -65,16 +73,17 @@ function fakeGateway(overrides: Partial<PublicBookingGateway> = {}): PublicBooki
 }
 
 describe('BookingFlow', () => {
-  it('starts on the clinic step and advances after picking a location', async () => {
+  it('defaults to Cuernavaca without overriding a later manual selection', async () => {
     const user = userEvent.setup()
-    const gateway = fakeGateway()
+    const gateway = fakeGateway({ listLocations: vi.fn().mockResolvedValue([LOCATIONS[0], CUERNAVACA]) })
     render(<BookingFlow gateway={gateway} providerUserId="prov-1" now={new Date(2026, 8, 11)} />)
 
     expect(screen.getByText('¿Dónde te queda mejor?')).toBeInTheDocument()
-    await waitFor(() => expect(screen.getByLabelText('Dirección del consultorio')).toBeInTheDocument())
-    expect(screen.getByRole('combobox')).toHaveValue('')
     expect(screen.getByText('Continuar')).toBeDisabled()
     expect(gateway.listLocationServices).not.toHaveBeenCalled()
+    await waitFor(() => expect(screen.getByRole('combobox')).toHaveValue(CUERNAVACA.id))
+    expect(screen.getByText('Continuar')).toBeEnabled()
+    await waitFor(() => expect(gateway.listLocationServices).toHaveBeenCalledWith('prov-1', CUERNAVACA.id))
 
     await user.selectOptions(screen.getByLabelText('Dirección del consultorio'), 'loc-1')
     expect(screen.getAllByText(LOCATIONS[0].address)).toHaveLength(3)
@@ -83,6 +92,34 @@ describe('BookingFlow', () => {
 
     expect(screen.getByText('¿Qué necesitas atender?')).toBeInTheDocument()
     expect(screen.getAllByText(LOCATIONS[0].address)).toHaveLength(2)
+    await waitFor(() => expect(gateway.listLocationServices).toHaveBeenLastCalledWith('prov-1', 'loc-1'))
+    await user.click(screen.getByText('Atrás'))
+    expect(screen.getByRole('combobox')).toHaveValue('loc-1')
+  })
+
+  it.each([
+    ['name before address', [{ ...LOCATIONS[0], address: 'Centro, Cuernavaca' }, CUERNAVACA], CUERNAVACA.id],
+    ['address when name is generic', [LOCATIONS[0], { ...CUERNAVACA, name: 'Consultorio Centro' }], CUERNAVACA.id],
+    ['API default without Cuernavaca', [{ ...LOCATIONS[0], id: 'other', isDefault: false }, LOCATIONS[0]], 'loc-1'],
+    ['first clinic without any default', [{ ...LOCATIONS[0], isDefault: false }], 'loc-1'],
+  ])('selects the %s', async (_label, locations, expectedId) => {
+    const gateway = fakeGateway({ listLocations: vi.fn().mockResolvedValue(locations) })
+    render(<BookingFlow gateway={gateway} providerUserId="prov-1" />)
+    await waitFor(() => expect(screen.getByRole('combobox')).toHaveValue(expectedId))
+    await waitFor(() => expect(gateway.listLocationServices).toHaveBeenCalledWith('prov-1', expectedId))
+  })
+
+  it('keeps selection empty after a load error and applies the default after retry', async () => {
+    const user = userEvent.setup()
+    const gateway = fakeGateway({
+      listLocations: vi.fn().mockRejectedValueOnce(new Error('offline')).mockResolvedValue([CUERNAVACA]),
+    })
+    render(<BookingFlow gateway={gateway} providerUserId="prov-1" />)
+    await screen.findByRole('alert')
+    expect(screen.getByText('Continuar')).toBeDisabled()
+    expect(gateway.listLocationServices).not.toHaveBeenCalled()
+    await user.click(screen.getByText('Reintentar'))
+    await waitFor(() => expect(screen.getByRole('combobox')).toHaveValue(CUERNAVACA.id))
   })
 
   it('keeps the clinic step invalid when no clinics are returned', async () => {
@@ -96,7 +133,7 @@ describe('BookingFlow', () => {
 
   it('completes the full booking flow end to end', async () => {
     const user = userEvent.setup()
-    const gateway = fakeGateway()
+    const gateway = fakeGateway({ listLocations: vi.fn().mockResolvedValue([LOCATIONS[0], CUERNAVACA]) })
     render(<BookingFlow gateway={gateway} providerUserId="prov-1" now={new Date(2026, 8, 11)} />)
 
     // Step 0: clinic
@@ -137,9 +174,14 @@ describe('BookingFlow', () => {
     await waitFor(() => expect(screen.getByText('Tu cita quedó agendada')).toBeInTheDocument())
     expect(screen.getByText(APPOINTMENT.publicRef)).toBeInTheDocument()
     expect(gateway.createAppointment).toHaveBeenCalledWith(
-      expect.objectContaining({ startsAt: '2026-09-15T16:15:00Z', serviceIds: ['svc-1'] }),
+      expect.objectContaining({ startsAt: '2026-09-15T16:15:00Z', serviceIds: ['svc-1'], locationId: 'loc-1' }),
       expect.any(String),
     )
+
+    await user.click(screen.getByText('Agendar otra cita'))
+    await waitFor(() => expect(screen.getByRole('combobox')).toHaveValue(CUERNAVACA.id))
+    expect(screen.getAllByText(CUERNAVACA.address)).toHaveLength(3)
+    await waitFor(() => expect(gateway.listLocationServices).toHaveBeenLastCalledWith('prov-1', CUERNAVACA.id))
   })
 
   it('sends the flow back to the schedule step on a 409 slot conflict', async () => {

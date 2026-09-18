@@ -24,7 +24,7 @@ describe('App', () => {
     render(<App />)
 
     expect(screen.getByText('¿Dónde te queda mejor?')).toBeInTheDocument()
-    await waitFor(() => expect(screen.getByLabelText('Dirección del consultorio')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('No hay sedes disponibles por el momento.')).toBeInTheDocument())
   })
 
   it('renders the appointment manage screen when the URL has a ?ref', async () => {

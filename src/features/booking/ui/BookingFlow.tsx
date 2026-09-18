@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAppointmentBooking } from '../application/useAppointmentBooking'
 import { useAvailability } from '../application/useAvailability'
 import { useBookingFlow } from '../application/useBookingFlow'
@@ -55,6 +55,18 @@ export function BookingFlow({ gateway, providerUserId, now }: BookingFlowProps) 
   const [cancelError, setCancelError] = useState<string | null>(null)
 
   const locationsQuery = useLocations(gateway, providerUserId)
+  useEffect(() => {
+    if (state.clinicId || locationsQuery.loading || locationsQuery.error) return
+
+    const locations = locationsQuery.locations
+    const preferred =
+      locations.find((location) => location.name.toLowerCase().includes('cuernavaca')) ??
+      locations.find((location) => location.address.toLowerCase().includes('cuernavaca')) ??
+      locations.find((location) => location.isDefault) ??
+      locations[0]
+    if (preferred) actions.setClinic(preferred.id)
+  }, [state.clinicId, locationsQuery.locations, locationsQuery.loading, locationsQuery.error, actions])
+
   const servicesQuery = useLocationServices(gateway, providerUserId, state.clinicId)
   const availabilityQuery = useAvailability(gateway, {
     providerUserId,

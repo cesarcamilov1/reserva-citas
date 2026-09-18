@@ -43,12 +43,13 @@ The user's request explicitly authorizes implementation of these booking UI chan
   - Checks: `pnpm test:run` — 29 files/155 tests passed; `pnpm lint` — passed with 4 pre-existing warnings; `pnpm build` — passed.
   - Commit: `a7777c4` (`feat(booking): simplify clinic selection`).
   - RDD assessment: medium; deferred to the feature-ending PR slice.
-- [ ] **SERVICE-1 — Hide service descriptions**
+- [x] **SERVICE-1 — Hide service descriptions**
   - Remove description rendering and the now-unused presentation contract/style.
   - Add an assertion that descriptions are absent while core service details remain.
   - Checks: focused service tests, lint, build.
-  - Commit: pending.
-  - RDD assessment: pending.
+  - Checks: `pnpm test:run` — 29 files/155 tests passed; `pnpm lint` — passed with 4 pre-existing warnings; `pnpm build` — passed.
+  - Commit: `930a0db` (`feat(booking): hide service descriptions`).
+  - RDD assessment: medium; included in the feature-ending PR slice.
 
 ## Acceptance criteria
 
@@ -62,7 +63,9 @@ The user's request explicitly authorizes implementation of these booking UI chan
 
 - Exploration completed with CodeGraph; removing the selector requires implicit clinic selection because step validity and downstream queries depend on `clinicId`.
 - CLINIC-1 completed: the default clinic is selected automatically with a first-location fallback, and the UI no longer exposes clinic selectors or addresses.
+- SERVICE-1 completed: service descriptions are no longer part of the card presentation contract or rendered output.
+- Running authored change count: 228 lines across the two work-unit commits.
 
 ## Next step
 
-Implement and verify SERVICE-1.
+Run the native RDD review if the user grants candidate consent, then prepare delivery.

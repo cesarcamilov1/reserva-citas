@@ -2,14 +2,13 @@ import styles from './ServiceCard.module.css'
 
 interface ServiceCardProps {
   name: string
-  description?: string
   priceLabel: string
   durationLabel: string
   selected: boolean
   onSelect: () => void
 }
 
-export function ServiceCard({ name, description, priceLabel, durationLabel, selected, onSelect }: ServiceCardProps) {
+export function ServiceCard({ name, priceLabel, durationLabel, selected, onSelect }: ServiceCardProps) {
   return (
     <button
       type="button"
@@ -22,7 +21,6 @@ export function ServiceCard({ name, description, priceLabel, durationLabel, sele
       </span>
       <span className={styles.body}>
         <span className={styles.name}>{name}</span>
-        {description && <span className={styles.desc}>{description}</span>}
       </span>
       <span className={styles.meta}>
         <span className={styles.price}>{priceLabel}</span>

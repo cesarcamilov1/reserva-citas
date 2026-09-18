@@ -34,17 +34,20 @@ export function StepClinic({ clinicId, locations, loading, error, onRetry, onSel
         </div>
       )}
 
-      {!loading && !error && (
+      {!loading && !error && locations.length === 0 && (
+        <div className={styles.status}>No hay sedes disponibles por el momento.</div>
+      )}
+
+      {!loading && !error && locations.length > 0 && (
         <SelectField
           id="sede"
           label="Dirección del consultorio"
           value={clinicId}
           onChange={onSelectClinic}
         >
-          <option value="">Selecciona una sede</option>
           {locations.map((location) => (
             <option key={location.id} value={location.id}>
-              {location.name} — {location.address}
+              {location.name}
             </option>
           ))}
         </SelectField>

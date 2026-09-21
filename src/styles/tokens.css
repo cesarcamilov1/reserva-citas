@@ -1,47 +1,50 @@
 :root {
   /* Surfaces */
-  --color-page: #f4f1ec;
+  --color-page: #f2f7fb;
   --color-surface: #ffffff;
-  --color-rail: #faf8f4;
+  --color-rail: #f8fbfd;
 
   /* Borders */
-  --color-border: #e7e1d6;
-  --color-border-soft: #ede7dc;
-  --color-border-strong: #ddd5c7;
-  --color-border-dashed: #ddd5c7;
+  --color-border: #dce7ee;
+  --color-border-soft: #e6eff4;
+  --color-border-strong: #c6d8e3;
+  --color-border-dashed: #c6d8e3;
 
   /* Ink */
-  --color-ink: #1b211f;
-  --color-ink-secondary: #4a524f;
-  --color-muted: #6b7370;
-  --color-muted-2: #9aa19d;
-  --color-muted-3: #c6cbc8;
-  --color-muted-4: #bfc4c1;
-  --color-muted-5: #a8aeab;
+  --color-ink: #10202e;
+  --color-ink-secondary: #3c4e5c;
+  --color-muted: #5a7083;
+  --color-muted-2: #90a4b4;
+  --color-muted-3: #c2cfda;
+  --color-muted-4: #b5c4d0;
+  --color-muted-5: #a1b1bf;
+
+  /* Feedback */
+  --color-danger: #c0392b;
 
   /* Accent (mixed toward white/black via src/styles/colorMix.ts) */
-  --color-accent: #0f6e62;
-  --color-accent-hover: #0a4f46;
+  --color-accent: #12719f;
+  --color-accent-hover: #0e587c;
 
   /* Interaction states (from the design prototype) */
-  --color-border-hover: #b9c4bf;
-  --color-day-hover: #efeae0;
-  --color-accent-soft: #eef5f4;
-  --color-accent-line: #adceca;
-  --color-accent-ink-25: #0b534a;
-  --color-accent-ink-12: #0d6156;
+  --color-border-hover: #a9c4d4;
+  --color-day-hover: #e7f0f7;
+  --color-accent-soft: #eef5f8;
+  --color-accent-line: #aecfde;
+  --color-accent-ink-25: #0e5577;
+  --color-accent-ink-12: #10638c;
 
   /* Day / slot states */
-  --color-day-closed-bg: #f4f1ec;
-  --color-day-closed-border: #e7e1d6;
+  --color-day-closed-bg: #f2f7fb;
+  --color-day-closed-border: #dce7ee;
 
   /* WhatsApp preview bubble */
-  --color-wa-panel-bg: #edebe4;
-  --color-wa-panel-border: #e2ded3;
+  --color-wa-panel-bg: #ecf1f5;
+  --color-wa-panel-border: #dee6ec;
   --color-wa-bubble-bg: #e9f3dc;
   --color-wa-bubble-border: #d8e7c6;
-  --color-wa-text: #263029;
-  --color-wa-meta: #7e8a78;
+  --color-wa-text: #1d2a33;
+  --color-wa-meta: #78889a;
 
   /* Typography */
   --font-family-base: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
@@ -99,8 +102,8 @@
   --radius-pill: 999px;
 
   /* Shadows */
-  --shadow-card: 0 18px 44px -30px rgba(27, 33, 31, 0.55);
-  --shadow-selected: 0 6px 18px -14px rgba(27, 33, 31, 0.6);
+  --shadow-card: 0 18px 44px -30px rgba(16, 32, 46, 0.55);
+  --shadow-selected: 0 6px 18px -14px rgba(16, 32, 46, 0.6);
 
   /* Layout */
   --layout-card-max-width: 988px;
